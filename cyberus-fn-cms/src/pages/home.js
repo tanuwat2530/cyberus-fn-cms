@@ -1,0 +1,97 @@
+import { useState } from 'react';
+import { useRouter } from 'next/router';
+import styles from '../styles/home.module.css';
+
+const dummyUsers = Array.from({ length: 53 }, (_, i) => ({
+  id: i + 1,
+  username: `user${i + 1}`,
+}));
+
+export default function Home() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 10;
+
+  const totalPages = Math.ceil(dummyUsers.length / usersPerPage);
+  const start = (currentPage - 1) * usersPerPage;
+  const currentUsers = dummyUsers.slice(start, start + usersPerPage);
+
+  const handlePrev = () => setCurrentPage((p) => Math.max(p - 1, 1));
+  const handleNext = () => setCurrentPage((p) => Math.min(p + 1, totalPages));
+  
+  const router = useRouter();
+  const handleAdd = async (e) => {
+    e.preventDefault();
+      router.push('/add');
+  };
+  const handleConfig  = (user_id, user_name) => {
+    router.push({
+        pathname: '/config',
+        query: { id: user_id, username: user_name },
+      });
+  };
+
+  const handleView = (user_id, user_name) => {
+    router.push({
+        pathname: '/view',
+        query: { id: user_id, username: user_name },
+      });
+  };
+
+  return (
+    <div className={styles.container}>
+      {/* Left Sidebar */}
+      <div className={styles.left}>
+        {/* <button className={styles.button}>Dashboard</button>
+        <button className={styles.button}>Settings</button> */}
+      </div>
+
+      {/* Middle Content */}
+      <div className={styles.middle}>
+        <h2>User List </h2> 
+        <center><span>Page {currentPage} of {totalPages}</span></center>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentUsers.map((user) => (
+              <tr key={user.id}>
+                <td>{user.id}</td>
+                <td>{user.username}</td>
+                <td>
+                  <button onClick={() => handleConfig(user.id, user.username)} className={styles.button_action}>Config</button>&nbsp;&nbsp;
+                  <button onClick={() => handleView(user.id, user.username)} className={styles.button_action}>&nbsp;View&nbsp;</button>&nbsp;&nbsp;
+                  <button className={styles.button_action}>Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className={styles.pagination}>
+        
+          <button onClick={handlePrev} disabled={currentPage === 1}>
+            
+            ⬅ Prev
+          </button>
+
+          <button onClick={ handleAdd} className={styles.button}>Add</button>
+
+          <button onClick={handleNext} disabled={currentPage === totalPages}>
+            Next ➡
+          </button>
+        </div>
+      </div>
+
+      {/* Right Sidebar */}
+      <div className={styles.right}>
+        {/* <button className={styles.button}>Profile</button>
+        <button className={styles.button}>Logout</button> */}
+      </div>
+    </div>
+  );
+}
