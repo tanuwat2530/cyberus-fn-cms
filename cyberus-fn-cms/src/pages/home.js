@@ -1,19 +1,48 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../styles/home.module.css';
 
-const dummyUsers = Array.from({ length: 53 }, (_, i) => ({
-  id: i + 1,
-  username: `user${i + 1}`,
-}));
+
+// const dummyUsers = Array.from({ length: 53 }, (_, i) => ({
+//   id: i + 1,
+//   username: `user${i + 1}`,
+// }));
+
+
+
+
 
 export default function Home() {
+
+  const [usersList, setUsers] = useState([]);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    fetch('http://localhost:5001/api/user/list-user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}) // if your BFF API expects a body
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch user list');
+        }
+        return response.json();
+      })
+      .then((data) => setUsers(data))
+      .catch((err) => setError(err.message));
+  }, []);
+
+
+
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 10;
 
-  const totalPages = Math.ceil(dummyUsers.length / usersPerPage);
+  const totalPages = Math.ceil(usersList.length / usersPerPage);
   const start = (currentPage - 1) * usersPerPage;
-  const currentUsers = dummyUsers.slice(start, start + usersPerPage);
+  const currentUsers = usersList.slice(start, start + usersPerPage);
 
   const handlePrev = () => setCurrentPage((p) => Math.max(p - 1, 1));
   const handleNext = () => setCurrentPage((p) => Math.min(p + 1, totalPages));
@@ -36,6 +65,8 @@ export default function Home() {
         query: { id: user_id, username: user_name },
       });
   };
+
+  
 
   return (
     <div className={styles.container}>

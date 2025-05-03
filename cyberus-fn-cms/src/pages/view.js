@@ -12,6 +12,11 @@ const dummyUsers = Array.from({ length: 53 }, (_, i) => ({
 
 }));
 
+
+
+
+
+
 export default function View() {
     
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,10 +28,9 @@ export default function View() {
 
   const handlePrev = () => setCurrentPage((p) => Math.max(p - 1, 1));
   const handleNext = () => setCurrentPage((p) => Math.min(p + 1, totalPages));
-  
 
 
-  const router = useRouter();
+    const router = useRouter();
 
     const { id, username } = router.query;
   
@@ -47,6 +51,7 @@ export default function View() {
 
   return (
     <div className={styles.container}>
+     
       {/* Left Sidebar */}
       <div className={styles.left}>
         {/* <button className={styles.button}>Dashboard</button>

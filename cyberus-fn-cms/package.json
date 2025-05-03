@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node server.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "express": "^4.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
     "next": "15.3.1",
     "path-to-regexp": "^8.2.0",
     "react": "^19.0.0",
@@ -21,5 +22,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
     "tailwindcss": "^4"
-  }
+  } 
+
+
 }
