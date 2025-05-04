@@ -3,14 +3,7 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import styles from '../styles/home.module.css';
 
-const dummyUsers = Array.from({ length: 53 }, (_, i) => ({
-  id: i + 1,
-  keyword: `keyword_${i + 1}`,
-  shortcode: `shortcode_${i + 1}`,
-  telcoid: `telcoid_${i + 1}`,
-  media: `media_${i + 1}`,
 
-}));
 
 
 
@@ -19,39 +12,68 @@ const dummyUsers = Array.from({ length: 53 }, (_, i) => ({
 
 export default function View() {
     
-  const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 10;
+    const [serviceList, setServiceList] = useState([]);
+    const [error, setError] = useState('');
 
-  const totalPages = Math.ceil(dummyUsers.length / usersPerPage);
-  const start = (currentPage - 1) * usersPerPage;
-  const currentUsers = dummyUsers.slice(start, start + usersPerPage);
+  const router = useRouter();
+  const { id, username } = router.query;
+  
+  useEffect(() => {
+    if (id && username) {
+      console.log('Received data :', id);
+      fetch('http://localhost:5001/api/user/list-service', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          client_partner_id: id, // 👈 this uses the actual variable value
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch user list');
+          }
+          return response.json();
+        })
+        .then((data) => setServiceList(data))
+        .catch((err) => setError(err.message));
+    }
+  }, [id, username]);
+
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const servicePerPage = 10;
+
+  const totalPages = Math.ceil(serviceList.length / servicePerPage);
+  const start = (currentPage - 1) * servicePerPage;
+  const currentService = serviceList.slice(start, start + servicePerPage);
 
   const handlePrev = () => setCurrentPage((p) => Math.max(p - 1, 1));
   const handleNext = () => setCurrentPage((p) => Math.min(p + 1, totalPages));
-
-
-    const router = useRouter();
-
 
   const handleHome = async (e) => {
     e.preventDefault();
       router.push('/home');
   };
 
-    const { id, username } = router.query;
-  
-    useEffect(() => {
-      if (id && username) {
-        console.log('Received User:', id, username);
-        // You can pre-fill or use this data now
-      }
-    }, [id, username]);
-  
-  
-    const handleEdit  = (user_id) => {
+  const handleEdit  = (client_name,service_id,client_partner_id,keyword,shortcode,telcoid,ads_id,aoc_refid,aoc_id,aoc_media,postback_url,dn_url,counter) => {
         router.push({
             pathname: '/edit',
-            query: { id: user_id },
+            query: { 
+              client_name: client_name,
+              service_id:service_id,
+              client_partner_id:client_partner_id,
+              keyword:keyword,
+              shortcode:shortcode,
+              ads_id:ads_id,
+              aoc_refid:aoc_refid,
+              aoc_id:aoc_id,
+              aoc_media:aoc_media,
+              postback_url:postback_url,
+              dn_url:dn_url,
+              counter:counter,
+            },
           });
       };
 
@@ -78,16 +100,35 @@ export default function View() {
               <th>Media</th>
             </tr>
           </thead>
+    
           <tbody>
-            {currentUsers.map((user) => (
-              <tr key={user.id}>
-                <td>{user.id}</td>
-                <td>{user.keyword}</td>
-                <td>{user.shortcode}</td>
-                <td>{user.telcoid}</td>
-                <td>{user.media}</td>
+            {currentService.map((serviceList) => (
+              <tr key={serviceList.id}>
+                <td>{serviceList.id}</td>
+                <td>{serviceList.keyword}</td>
+                <td>{serviceList.shortcode}</td>
+                <td>{serviceList.telcoid}</td>
+                <td>{serviceList.wap_aoc_media}</td>
                 <td>
-                  <button onClick={() => handleEdit(user.id)} className={styles.button_action}>Edit</button>&nbsp;&nbsp;
+                  <button onClick={() => handleEdit
+                    (
+                      username,
+                      serviceList.id,
+                      serviceList.client_partner_id,
+                      serviceList.keyword,
+                      serviceList.shortcode,
+                      serviceList.telcoid,
+                      serviceList.ads_id,
+                      serviceList.wap_aoc_refid,
+                      serviceList.wap_aoc_id,
+                      serviceList.wap_aoc_media,
+                      serviceList.postback_url,
+                      serviceList.dn_url,
+                      serviceList.postback_counter,
+
+                     
+                     
+                    )} className={styles.button_action}>Edit</button>&nbsp;&nbsp;
                   
                 </td>
               </tr>

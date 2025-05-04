@@ -18,14 +18,14 @@ export default function ConfigPage() {
   });
 
   const router = useRouter();
-  const { id } = router.query;
+  const { id,user } = router.query;
 
   useEffect(() => {
     if (id) {
       console.log('Received User:', id);
       // You can pre-fill or use this data now
     }
-  }, [id]);
+  }, [id,user]);
 
 
   const handleChange = (e) => {
@@ -47,7 +47,7 @@ export default function ConfigPage() {
 
   return (
     <div className={styles.container}>
-      <h1>Edit Service Partner : ID = {id} , Name =  </h1>
+      <h1>Edit Service Partner : ID = {id} , Partner Name =  {user}</h1>
       <form onSubmit={handleSubmit}>
         <table className={styles.table}>
           <thead>
