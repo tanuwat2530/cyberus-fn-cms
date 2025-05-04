@@ -3,13 +3,6 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import styles from '../styles/home.module.css';
 
-
-
-
-
-
-
-
 export default function View() {
     
     const [serviceList, setServiceList] = useState([]);
@@ -19,7 +12,7 @@ export default function View() {
   const { id, username } = router.query;
   
   useEffect(() => {
-    if (id && username) {
+    if (id) {
       console.log('Received data :', id);
       fetch('http://localhost:5001/api/user/list-service', {
         method: 'POST',
@@ -27,7 +20,7 @@ export default function View() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          client_partner_id: id, // 👈 this uses the actual variable value
+          client_partner_id: id,
         }),
       })
         .then((response) => {
@@ -36,7 +29,14 @@ export default function View() {
           }
           return response.json();
         })
-        .then((data) => setServiceList(data))
+        .then((data) => {
+          if (data && Array.isArray(data)) {
+            setServiceList(data);
+          } else {
+            setServiceList([]);  // fallback to empty list
+            setError('No services found');
+          }
+        })
         .catch((err) => setError(err.message));
     }
   }, [id, username]);
@@ -44,8 +44,8 @@ export default function View() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const servicePerPage = 10;
-
-  const totalPages = Math.ceil(serviceList.length / servicePerPage);
+  
+  const totalPages =  Math.ceil(serviceList.length / servicePerPage);
   const start = (currentPage - 1) * servicePerPage;
   const currentService = serviceList.slice(start, start + servicePerPage);
 
@@ -78,7 +78,10 @@ export default function View() {
           });
       };
 
+
+      
   return (
+  
     <div className={styles.container}>
      
       {/* Left Sidebar */}
@@ -103,6 +106,7 @@ export default function View() {
           </thead>
     
           <tbody>
+           
             {currentService.map((serviceList) => (
               <tr key={serviceList.id}>
                 <td>{serviceList.id}</td>
@@ -158,4 +162,6 @@ export default function View() {
       </div>
     </div>
   );
+
 }
+  

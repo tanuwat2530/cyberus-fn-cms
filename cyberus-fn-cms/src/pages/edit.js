@@ -5,8 +5,6 @@ import styles from '../styles/edit.module.css';
 
 export default function ConfigPage() {
  
-  
-
   const router = useRouter();
   const { client_name,
     service_id,
@@ -51,7 +49,7 @@ export default function ConfigPage() {
     aoc_media,
     postback_url,
     dn_url,
-    counter]);
+counter]);
 
   const [formData, setFormData] = useState({
     keyword: '',
@@ -65,7 +63,6 @@ export default function ConfigPage() {
     dn_url: '',
     counter: '',
   });
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
