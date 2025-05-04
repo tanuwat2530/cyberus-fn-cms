@@ -66,6 +66,7 @@ export default function View() {
               client_partner_id:client_partner_id,
               keyword:keyword,
               shortcode:shortcode,
+              telcoid:telcoid,
               ads_id:ads_id,
               aoc_refid:aoc_refid,
               aoc_id:aoc_id,
