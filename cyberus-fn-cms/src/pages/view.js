@@ -11,35 +11,35 @@ export default function View() {
   const router = useRouter();
   const { id, username } = router.query;
   
-  useEffect(() => {
-    if (id) {
-      console.log('Received data :', id);
-      fetch('http://localhost:5001/api/user/list-service', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          client_partner_id: id,
-        }),
+useEffect(() => {
+  if (id) {
+    console.log('Received data :', id);
+    fetch('http://localhost:5001/api/user/list-service', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        client_partner_id: id,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch user list');
+        }
+        return response.json();
       })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Failed to fetch user list');
-          }
-          return response.json();
-        })
-        .then((data) => {
-          if (data && Array.isArray(data)) {
-            setServiceList(data);
-          } else {
-            setServiceList([]);  // fallback to empty list
-            setError('No services found');
-          }
-        })
-        .catch((err) => setError(err.message));
-    }
-  }, [id, username]);
+      .then((data) => {
+        if (data && Array.isArray(data)) {
+          setServiceList(data);
+        } else {
+          setServiceList([]);  // fallback to empty list
+          setError('No services found');
+        }
+      })
+      .catch((err) => setError(err.message));
+  }
+}, [id, username]);
 
 
   const [currentPage, setCurrentPage] = useState(1);

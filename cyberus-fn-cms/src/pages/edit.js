@@ -6,7 +6,9 @@ import styles from '../styles/edit.module.css';
 export default function ConfigPage() {
  
   const router = useRouter();
-  const { client_name,
+  const { 
+    client_partner_id,
+    client_name,
     service_id,
     keyword,
     shortcode,
@@ -20,21 +22,22 @@ export default function ConfigPage() {
     counter} = router.query;
 
   useEffect(() => {
-    //http://localhost:3000/edit?client_name=phonattic&service_id=28&client_partner_id=172dc14e&keyword=z&shortcode=c&ads_id=b&aoc_refid=n&aoc_id=%2C&aoc_media=.&postback_url=lh87je&dn_url=r&counter=0
     if (client_name) {
-      console.log('Received User:', client_name);
+
       setFormData((prev) => ({
         ...prev,
+        id:parseInt(service_id, 10),//decimal base
         keyword: keyword,
         shortcode: shortcode,
         telcoid: telcoid,
         ads_id: ads_id,
-        aoc_refid: aoc_refid,
-        aoc_id:aoc_id,
-        aoc_media:aoc_media,
+        client_partner_id:client_partner_id,
+        wap_aoc_refid: aoc_refid,
+        wap_aoc_id:aoc_id,
+        wap_aoc_media:aoc_media,
         postback_url:postback_url,
         dn_url:dn_url,
-        counter:counter,
+        postback_counter:parseInt(counter, 10),//decimal base
       }));
       // You can pre-fill or use this data now
     }
@@ -44,41 +47,76 @@ export default function ConfigPage() {
     shortcode,
     telcoid,
     ads_id,
+    client_partner_id,
     aoc_refid,
     aoc_id,
     aoc_media,
     postback_url,
     dn_url,
-counter]);
+    counter]);
 
   const [formData, setFormData] = useState({
+    id:'',
     keyword: '',
     shortcode: '',
     telcoid: '',
     ads_id: '',
-    aoc_refid: '',
-    aoc_id: '',
-    aoc_media: '',
+    client_partner_id:'',
+    wap_aoc_refid: '',
+    wap_aoc_id: '',
+    wap_aoc_media: '',
     postback_url: '',
     dn_url: '',
-    counter: '',
+    postback_counter: '',
   });
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  setFormData((prev) => ({
+    ...prev,
+    [name]: name === "postback_counter" ? parseInt(value, 10) || 0 : value,
+  }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const hasEmpty = Object.values(formData).some((v) => !v.trim());
-    if (hasEmpty) {
-      alert('All fields are required.');
-      return;
-    }
+   
+    console.log(formData)
+    fetch('http://localhost:5001/api/user/update-service', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to add user');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data)
+        alert("Service updated successed")
+        
+        router.push({
+          pathname: '/view',
+          query: { 
+            id: client_partner_id,
+            username:client_name,
+            
+          },
+        });
+      })
+      .catch((error) => {
+        console.error('Error:', error.message);
+      });
+  
 
-    // Handle save logic (e.g., API call)
-    console.log('Submitted:', formData);
+
+
+
   };
 
   return (
@@ -100,10 +138,11 @@ counter]);
                   <input
                     className={styles.input}
                     name={key}
-                    type="text"
+                    type={key === 'postback_counter' ? 'number' : 'text'}
                     required
                     value={formData[key]}
                     onChange={handleChange}
+                    readOnly={key === 'client_partner_id' || key === 'id'} // 👈 This line makes it readonly
                   />
                 </td>
               </tr>
