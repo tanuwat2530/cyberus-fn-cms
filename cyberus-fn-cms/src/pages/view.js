@@ -32,6 +32,12 @@ export default function View() {
 
     const router = useRouter();
 
+
+  const handleHome = async (e) => {
+    e.preventDefault();
+      router.push('/home');
+  };
+
     const { id, username } = router.query;
   
     useEffect(() => {
@@ -96,7 +102,7 @@ export default function View() {
             ⬅ Prev
           </button>
 
-
+          <button onClick={ handleHome} className={styles.button}>Home</button>
           <button onClick={handleNext} disabled={currentPage === totalPages}>
             Next ➡
           </button>

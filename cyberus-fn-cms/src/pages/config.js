@@ -4,18 +4,7 @@ import { useEffect } from 'react';
 import styles from '../styles/config.module.css';
 
 export default function ConfigPage() {
-  const [formData, setFormData] = useState({
-    keyword: '',
-    shortcode: '',
-    telcoid: '',
-    ads_id: '',
-    aoc_refid: '',
-    aoc_id: '',
-    aoc_media: '',
-    postback_url: '',
-    dn_url: '',
-    counter: '',
-  });
+  
 
   const router = useRouter();
   const { id, username } = router.query;
@@ -23,11 +12,27 @@ export default function ConfigPage() {
   useEffect(() => {
     if (id && username) {
       console.log('Received User:', id, username);
-      // You can pre-fill or use this data now
+      setFormData((prev) => ({
+        ...prev,
+        client_partner_id: id,
+      }));
     }
   }, [id, username]);
 
 
+  const [formData, setFormData] = useState({
+    client_partner_id:'',
+    keyword: '',
+    shortcode: '',
+    telcoid: '',
+    ads_id: '',
+    wap_aoc_refid: '',
+    wap_aoc_id: '',
+    wap_aoc_media: '',
+    postback_url: '',
+    dn_url: '',
+    counter: '',
+  });
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -36,19 +41,38 @@ export default function ConfigPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const hasEmpty = Object.values(formData).some((v) => !v.trim());
-    if (hasEmpty) {
-      alert('All fields are required.');
-      return;
-    }
+    
+  fetch('http://localhost:5001/api/user/config', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(formData),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to add user');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      alert("User created successed")
+      router.push("/home")
+    })
+    .catch((error) => {
+      console.error('Error:', error.message);
+    });
+
 
     // Handle save logic (e.g., API call)
-    console.log('Submitted:', formData);
+    console.log('Submitted:', JSON.stringify(formData));
   };
 
   return (
     <div className={styles.container}>
       <h1>Create Service Partner : ID = {id} , Name = {username} </h1>
       <form onSubmit={handleSubmit}>
+
         <table className={styles.table}>
           <thead>
             <tr>
@@ -57,21 +81,24 @@ export default function ConfigPage() {
             </tr>
           </thead>
           <tbody>
-            {Object.keys(formData).map((key) => (
-              <tr key={key}>
-                <td>{key}</td>
-                <td>
-                  <input
-                    className={styles.input}
-                    name={key}
-                    type="text"
-                    required
-                    value={formData[key]}
-                    onChange={handleChange}
-                  />
-                </td>
-              </tr>
-            ))}
+          {Object.keys(formData).map((key) => (
+    <tr key={key}>
+      <td>{key}</td>
+      <td>
+        <input
+          className={styles.input}
+          name={key}
+          type="text"
+          required
+          value={formData[key]}
+          onChange={handleChange}
+          readOnly={key === 'client_partner_id'} // 👈 This line makes it readonly
+         
+        />
+      </td>
+    </tr>
+  ))}
+
           </tbody>
         </table>
         <button type="submit" className={styles.submitBtn}>Save Config</button>
