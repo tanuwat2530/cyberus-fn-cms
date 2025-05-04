@@ -2,43 +2,50 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../styles/add.module.css';
 
-export default function Dashboard() {
-  const [users, setUsers] = useState([]);
-  const [form, setForm] = useState({ name: '', email: '', editingIndex: null });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
-  };
-
+export default function addUser() {
+  
   const router = useRouter();
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    router.push('/home');
+  
 
-    // if (!form.name || !form.email) return;
-
-    // if (form.editingIndex !== null) {
-    //   const updatedUsers = [...users];
-    //   updatedUsers[form.editingIndex] = { name: form.name, email: form.email };
-    //   setUsers(updatedUsers);
-    // } else {
-    //   setUsers([...users, { name: form.name, email: form.email }]);
-    // }
-
-    // setForm({ name: '', password: '', editingIndex: null });
-  };
-
-  // const handleEdit = (index) => {
-  //   setForm({ ...users[index], editingIndex: index });
-  // };
-
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-const handleSuggestPassword = () => {
-  const newPassword = generatePassword();
-  setPassword(newPassword);
-};
+  const handleSuggestPassword = () => {
+    const newPassword = generatePassword();
+    setPassword(newPassword);
+  };
+
+  const handleSubmit = (e) => {
+  e.preventDefault();
+  const formData = {
+    username,
+    password,
+  };
+
+  fetch('http://localhost:5001/api/user/add', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(formData),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to add user');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      alert("User created successed")
+      router.push("/home")
+    })
+    .catch((error) => {
+      console.error('Error:', error.message);
+    });
+
+  };
+
+
   function generatePassword(length = 12) {
     const charset =
       'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~';
@@ -56,32 +63,25 @@ const handleSuggestPassword = () => {
           type="text"
           name="username"
           placeholder="Input username"
-         
+          onChange={(e) => setUsername(e.target.value)}
           className={styles.input}
+          required
         />
         <input
-          type="text"          
-          value={password}
-                    placeholder="Input password or suggest password"
+          type="text"     
+          name="password"     
+          value={password} placeholder="Input password or suggest password"
           onChange={(e) => setPassword(e.target.value)}
           className={styles.input}
+          required
         />
         <button type="button" onClick={handleSuggestPassword} className={styles.button_suggest}>
   Suggest Password
 </button>
-        <button onClick={handleSubmit} type="submit" className={styles.button}>
+        <button type="submit" className={styles.button}>
           Create
         </button>
       </form>
-
-      {/* <ul className={styles.userList}>
-        {users.map((user, i) => (
-          <li key={i} className={styles.userItem}>
-            {user.name} ({user.email})
-            <button onClick={() => handleEdit(i)} className={styles.editButton}>Edit</button>
-          </li>
-        ))}
-      </ul> */}
     </div>
   );
 }
