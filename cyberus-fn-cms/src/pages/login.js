@@ -1,24 +1,61 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import SHA256 from 'crypto-js/sha256';
+import { v4 as uuidv4 } from 'uuid';
 import styles from '../styles/Login.module.css';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Fake login
-    if (email === 'admin' && password === 'password') {
-      
-      router.push('/home');
-      
-    } else {
-      setError('Invalid credentials');
-    }
+    
+    const uniqueId = uuidv4();
+        // Combine and hash
+    const combined = username + password + uniqueId;
+    const session = SHA256(combined).toString();
+    const formData = {
+      username,
+      password,
+      session
+    };
+  
+    fetch('http://localhost:5001/api/user/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Cannot login');
+        }
+        return response.json();
+      })
+      .then((data) => {
+
+        console.log(data["code"])
+        if (data["code"] === '1'){
+          alert("Welcome "+username)
+          localStorage.setItem("user", username);
+          localStorage.setItem("session", session);
+          router.push("/home")
+          
+        }else{
+          router.push("/login")
+        }
+
+      })
+      .catch((error) => {
+        console.error('Error:', error.message);
+      });
+    
+
   };
 
   return (
@@ -28,8 +65,8 @@ export default function LoginPage() {
         <input
           type="input"
           placeholder="Username"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           className={styles.input}
           required
         />

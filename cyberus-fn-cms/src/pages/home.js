@@ -2,22 +2,39 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../styles/home.module.css';
 
-
-// const dummyUsers = Array.from({ length: 53 }, (_, i) => ({
-//   id: i + 1,
-//   username: `user${i + 1}`,
-// }));
-
-
-
-
-
 export default function Home() {
 
-  const [usersList, setUsers] = useState([]);
-  const [error, setError] = useState('');
+  const [usersList, setUsersList] = useState([]);
 
   useEffect(() => {
+    const username = localStorage.getItem('user'); // replace with your key
+    const session = localStorage.getItem('session'); // replace with your key
+    const reqData = {
+      username,
+      session,
+    };
+    
+    fetch('http://localhost:5001/api/user/session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(reqData),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch user list');
+      }
+      return response.json();
+    })
+    .then((data) =>  {
+      if (data["code"] === '0') {
+        router.push("/login")
+      }
+    })
+    .catch((err) => setError(err.message));
+
+
     fetch('http://localhost:5001/api/user/list-user', {
       method: 'POST',
       headers: {
@@ -31,12 +48,11 @@ export default function Home() {
         }
         return response.json();
       })
-      .then((data) => setUsers(data))
+      .then((data) => setUsersList(data))
       .catch((err) => setError(err.message));
   }, []);
 
-
-
+  
   
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 10;
