@@ -1,11 +1,41 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../styles/add.module.css';
 
 export default function addUser() {
   
-  const router = useRouter();
-  
+const router = useRouter();
+useEffect(() => {
+    const username = localStorage.getItem('user'); // replace with your key
+    const session = localStorage.getItem('session'); // replace with your key
+    const reqData = {
+      username,
+      session,
+    };
+    
+    fetch('http://localhost:5001/api/user/session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(reqData),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch user list');
+      }
+      return response.json();
+    })
+    .then((data) =>  {
+      if (data["code"] === '0') {
+        router.push("/login")
+      }
+    })
+    .catch((err) => setError(err.message));
+
+  }, []);
+
+
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

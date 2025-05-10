@@ -22,6 +22,35 @@ export default function ConfigPage() {
     counter} = router.query;
 
   useEffect(() => {
+    const username = localStorage.getItem('user'); // replace with your key
+    const session = localStorage.getItem('session'); // replace with your key
+    const reqData = {
+      username,
+      session,
+    };
+    
+    fetch('http://localhost:5001/api/user/session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(reqData),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch user list');
+      }
+      return response.json();
+    })
+    .then((data) =>  {
+      if (data["code"] === '0') {
+        router.push("/login")
+      }
+    })
+    .catch((err) => setError(err.message));
+
+
+
     if (client_name) {
 
       setFormData((prev) => ({
