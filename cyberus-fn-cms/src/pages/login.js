@@ -47,7 +47,8 @@ export default function LoginPage() {
           router.push("/home")
           
         }else{
-          router.push("/login")
+               // Redirect if no session
+      navigate('/login');
         }
 
       })

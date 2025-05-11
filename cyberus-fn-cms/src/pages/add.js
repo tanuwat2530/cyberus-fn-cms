@@ -5,6 +5,8 @@ import styles from '../styles/add.module.css';
 export default function addUser() {
   
 const router = useRouter();
+ const [err,setError]= useState([]);
+ 
 useEffect(() => {
     const username = localStorage.getItem('user'); // replace with your key
     const session = localStorage.getItem('session'); // replace with your key
@@ -28,7 +30,8 @@ useEffect(() => {
     })
     .then((data) =>  {
       if (data["code"] === '0') {
-        router.push("/login")
+              // Redirect if no session
+      router.push('/login');
       }
     })
     .catch((err) => setError(err.message));

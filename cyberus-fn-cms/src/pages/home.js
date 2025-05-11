@@ -5,6 +5,7 @@ import styles from '../styles/home.module.css';
 export default function Home() {
 
   const [usersList, setUsersList] = useState([]);
+  const [err,setError]= useState([]);
 
   useEffect(() => {
     const username = localStorage.getItem('user'); // replace with your key
@@ -29,7 +30,7 @@ export default function Home() {
     })
     .then((data) =>  {
       if (data["code"] === '0') {
-        router.push("/login")
+     router.push('/login')
       }
     })
     .catch((err) => setError(err.message));

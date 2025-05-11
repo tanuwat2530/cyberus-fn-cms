@@ -34,7 +34,8 @@ useEffect(() => {
   })
   .then((data) =>  {
     if (data["code"] === '0') {
-      router.push("/login")
+            // Redirect if no session
+            router.push('/login');
     }
   })
   .catch((err) => setError(err.message));
