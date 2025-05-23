@@ -30,7 +30,7 @@ export default function ConfigPage() {
       session,
     };
     
-    fetch('http://localhost:5001/api/user/session', {
+    fetch('http://localhost:3003/api/user/session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ export default function ConfigPage() {
     e.preventDefault();
    
     console.log(formData)
-    fetch('http://localhost:5001/api/user/update-service', {
+    fetch('http://localhost:3003/api/user/update-service', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

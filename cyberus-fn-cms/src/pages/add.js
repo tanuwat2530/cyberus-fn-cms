@@ -15,7 +15,7 @@ useEffect(() => {
       session,
     };
     
-    fetch('http://localhost:5001/api/user/session', {
+    fetch('http://localhost:3003/api/user/session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ useEffect(() => {
     password,
   };
 
-  fetch('http://localhost:5001/api/user/add', {
+  fetch('http://localhost:3003/api/user/add', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

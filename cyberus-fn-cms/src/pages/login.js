@@ -24,7 +24,7 @@ export default function LoginPage() {
       session
     };
   
-    fetch('http://localhost:5001/api/user/login', {
+    fetch('http://localhost:3003/api/user/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
