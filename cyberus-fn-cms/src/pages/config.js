@@ -3,50 +3,42 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import styles from '../styles/config.module.css';
 
+
+
 export default function ConfigPage() {
   
-
+  const apiUrl = process.env.BFF_API_URL;
   const router = useRouter();
   const [err,setError]= useState([]);
   const { id, username } = router.query;
 
   useEffect(() => {
-    const username = localStorage.getItem('user'); // replace with your key
-    const session = localStorage.getItem('session'); // replace with your key
-    const reqData = {
-      username,
-      session,
-    };
-    
-    fetch('http://localhost:3003/api/user/session', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(reqData),
-    })
+  const username = localStorage.getItem('user'); 
+  const session = localStorage.getItem('session');
+  const reqData = { username, session };
+
+  fetch(`${apiUrl}/api/user/session`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(reqData),
+  })
     .then((response) => {
-      if (!response.ok) {
-        throw new Error('Failed to fetch user list');
-      }
+      if (!response.ok) throw new Error('Failed to fetch user list');
       return response.json();
     })
-    .then((data) =>  {
-      if (data["code"] === '0') {
-              // Redirect if no session
-      router.push('/login');
-      }
+    .then((data) => {
+      if (data.code === '0') router.push('/login');
     })
     .catch((err) => setError(err.message));
 
-    if (id && username) {
-      console.log('Received User:', id, username);
-      setFormData((prev) => ({
-        ...prev,
-        client_partner_id: id,
-      }));
-    }
-  }, [id, username]);
+  if (id && username) {
+    console.log('Received User:', id, username);
+    setFormData((prev) => ({
+      ...prev,
+      client_partner_id: id,
+    }));
+  }
+}, [id, username, apiUrl, router, setError, setFormData]);
 
 
   const [formData, setFormData] = useState({
@@ -71,7 +63,7 @@ export default function ConfigPage() {
     e.preventDefault();
     const hasEmpty = Object.values(formData).some((v) => !v.trim());
     
-  fetch('http://localhost:3003/api/user/config', {
+  fetch('${apiUrl}/api/user/config', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

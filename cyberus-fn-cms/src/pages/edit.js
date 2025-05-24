@@ -4,7 +4,8 @@ import { useEffect } from 'react';
 import styles from '../styles/edit.module.css';
 
 export default function ConfigPage() {
- 
+
+  const apiUrl = process.env.BFF_API_URL;
   const router = useRouter();
   const [err,setError]= useState([]);
   const { 
@@ -23,68 +24,71 @@ export default function ConfigPage() {
     counter} = router.query;
 
   useEffect(() => {
-    const username = localStorage.getItem('user'); // replace with your key
-    const session = localStorage.getItem('session'); // replace with your key
-    const reqData = {
-      username,
-      session,
-    };
-    
-    fetch('http://localhost:3003/api/user/session', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(reqData),
-    })
-    .then((response) => {
+  const checkSessionAndSetForm = async () => {
+    try {
+      const username = localStorage.getItem('user'); // replace with your key
+      const session = localStorage.getItem('session'); // replace with your key
+      const reqData = { username, session };
+
+      const response = await fetch(`${apiUrl}/api/user/session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reqData),
+      });
+
       if (!response.ok) {
         throw new Error('Failed to fetch user list');
       }
-      return response.json();
-    })
-    .then((data) =>  {
-      if (data["code"] === '0') {
-             // Redirect if no session
-      router.push('/login');
+
+      const data = await response.json();
+
+      if (data.code === '0') {
+        // Redirect if no session
+        router.push('/login');
+        return; // Stop further execution if redirected
       }
-    })
-    .catch((err) => setError(err.message));
 
-
-
-    if (client_name) {
-
-      setFormData((prev) => ({
-        ...prev,
-        id:parseInt(service_id, 10),//decimal base
-        keyword: keyword,
-        shortcode: shortcode,
-        telcoid: telcoid,
-        ads_id: ads_id,
-        client_partner_id:client_partner_id,
-        wap_aoc_refid: aoc_refid,
-        wap_aoc_id:aoc_id,
-        wap_aoc_media:aoc_media,
-        postback_url:postback_url,
-        dn_url:dn_url,
-        postback_counter:parseInt(counter, 10),//decimal base
-      }));
-      // You can pre-fill or use this data now
+      if (client_name) {
+        setFormData((prev) => ({
+          ...prev,
+          id: parseInt(service_id, 10), // decimal base
+          keyword,
+          shortcode,
+          telcoid,
+          ads_id,
+          client_partner_id,
+          wap_aoc_refid: aoc_refid,
+          wap_aoc_id: aoc_id,
+          wap_aoc_media: aoc_media,
+          postback_url,
+          dn_url,
+          postback_counter: parseInt(counter, 10), // decimal base
+        }));
+      }
+    } catch (err) {
+      setError(err.message);
     }
-  }, [client_name,
-    service_id,
-    keyword,
-    shortcode,
-    telcoid,
-    ads_id,
-    client_partner_id,
-    aoc_refid,
-    aoc_id,
-    aoc_media,
-    postback_url,
-    dn_url,
-    counter]);
+  };
+
+  checkSessionAndSetForm();
+}, [
+  apiUrl,
+  router,
+  client_name,
+  service_id,
+  keyword,
+  shortcode,
+  telcoid,
+  ads_id,
+  client_partner_id,
+  aoc_refid,
+  aoc_id,
+  aoc_media,
+  postback_url,
+  dn_url,
+  counter,
+]);
+
 
   const [formData, setFormData] = useState({
     id:'',
@@ -114,7 +118,7 @@ export default function ConfigPage() {
     e.preventDefault();
    
     console.log(formData)
-    fetch('http://localhost:3003/api/user/update-service', {
+    fetch('${apiUrl}/api/user/update-service', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

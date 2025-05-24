@@ -2,41 +2,44 @@ import { useState,useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../styles/add.module.css';
 
-export default function addUser() {
-  
+export default function AddUser() {
+
+const apiUrl = process.env.BFF_API_URL;
 const router = useRouter();
- const [err,setError]= useState([]);
+const [err,setError]= useState([]);
  
 useEffect(() => {
-    const username = localStorage.getItem('user'); // replace with your key
-    const session = localStorage.getItem('session'); // replace with your key
-    const reqData = {
-      username,
-      session,
-    };
-    
-    fetch('http://localhost:3003/api/user/session', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(reqData),
-    })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error('Failed to fetch user list');
-      }
-      return response.json();
-    })
-    .then((data) =>  {
-      if (data["code"] === '0') {
-              // Redirect if no session
-      router.push('/login');
-      }
-    })
-    .catch((err) => setError(err.message));
+  const checkSession = async () => {
+    try {
+      const username = localStorage.getItem('user');
+      const session = localStorage.getItem('session');
+      const reqData = { username, session };
 
-  }, []);
+
+      const response = await fetch(`${apiUrl}/api/user/session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reqData),
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch user list');
+
+      const data = await response.json();
+
+      if (data.code === '0') {
+        // Access router inside effect
+        router.push('/login');
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  checkSession();
+
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
+
 
 
 
@@ -55,7 +58,7 @@ useEffect(() => {
     password,
   };
 
-  fetch('http://localhost:3003/api/user/add', {
+  fetch('${apiUrl}/api/user/add', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

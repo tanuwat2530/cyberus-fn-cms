@@ -4,54 +4,59 @@ import styles from '../styles/home.module.css';
 
 export default function Home() {
 
+  const apiUrl = process.env.BFF_API_URL;
   const [usersList, setUsersList] = useState([]);
   const [err,setError]= useState([]);
 
+  
+
   useEffect(() => {
-    const username = localStorage.getItem('user'); // replace with your key
-    const session = localStorage.getItem('session'); // replace with your key
-    const reqData = {
-      username,
-      session,
-    };
-    
-    fetch('http://localhost:3003/api/user/session', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(reqData),
-    })
-    .then((response) => {
-      if (!response.ok) {
+  const fetchData = async () => {
+    try {
+      const username = localStorage.getItem('user'); // replace with your key
+      const session = localStorage.getItem('session'); // replace with your key
+      const reqData = { username, session };
+
+      // Check user session
+      const sessionRes = await fetch(`${apiUrl}/api/user/session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reqData),
+      });
+
+      if (!sessionRes.ok) {
+        throw new Error('Failed to fetch user session');
+      }
+
+      const sessionData = await sessionRes.json();
+
+      if (sessionData.code === '0') {
+        router.push('/login');
+        return; // stop further execution if redirected
+      }
+
+      // Fetch user list
+      const userListRes = await fetch(`${apiUrl}/api/user/list-user`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}), // if your BFF API expects a body
+      });
+
+      if (!userListRes.ok) {
         throw new Error('Failed to fetch user list');
       }
-      return response.json();
-    })
-    .then((data) =>  {
-      if (data["code"] === '0') {
-     router.push('/login')
-      }
-    })
-    .catch((err) => setError(err.message));
 
+      const userListData = await userListRes.json();
+      setUsersList(userListData);
 
-    fetch('http://localhost:3003/api/user/list-user', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({}) // if your BFF API expects a body
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch user list');
-        }
-        return response.json();
-      })
-      .then((data) => setUsersList(data))
-      .catch((err) => setError(err.message));
-  }, []);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  fetchData();
+}, [apiUrl, router]);
+
 
   
   

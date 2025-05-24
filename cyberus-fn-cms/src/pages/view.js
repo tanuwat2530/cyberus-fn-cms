@@ -1,72 +1,70 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import styles from '../styles/home.module.css';
 
 export default function View() {
-    
-    const [serviceList, setServiceList] = useState([]);
-    const [error, setError] = useState('');
+  
+  const apiUrl = process.env.BFF_API_URL;
+  const [serviceList, setServiceList] = useState([]);
+  const [error, setError] = useState('');
 
   const router = useRouter();
   const { id, username } = router.query;
   
 useEffect(() => {
-  const username = localStorage.getItem('user'); // replace with your key
-  const session = localStorage.getItem('session'); // replace with your key
-  const reqData = {
-    username,
-    session,
-  };
-  
-  fetch('http://localhost:3003/api/user/session', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(reqData),
-  })
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error('Failed to fetch user list');
-    }
-    return response.json();
-  })
-  .then((data) =>  {
-    if (data["code"] === '0') {
-            // Redirect if no session
-            router.push('/login');
-    }
-  })
-  .catch((err) => setError(err.message));
-  if (id) {
-    console.log('Received data :', id);
-    fetch('http://localhost:3003/api/user/list-service', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        client_partner_id: id,
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch user list');
+  const fetchData = async () => {
+    try {
+      const storedUsername = localStorage.getItem('user');
+      const session = localStorage.getItem('session');
+      const reqData = { username: storedUsername, session };
+
+      // Check user session
+      const sessionRes = await fetch(`${apiUrl}/api/user/session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reqData),
+      });
+
+      if (!sessionRes.ok) {
+        throw new Error('Failed to fetch user session');
+      }
+
+      const sessionData = await sessionRes.json();
+
+      if (sessionData.code === '0') {
+        router.push('/login');
+        return;
+      }
+
+      // If id exists, fetch service list
+      if (id) {
+        const serviceRes = await fetch(`${apiUrl}/api/user/list-service`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ client_partner_id: id }),
+        });
+
+        if (!serviceRes.ok) {
+          throw new Error('Failed to fetch service list');
         }
-        return response.json();
-      })
-      .then((data) => {
-        if (data && Array.isArray(data)) {
-          setServiceList(data);
+
+        const serviceData = await serviceRes.json();
+
+        if (Array.isArray(serviceData)) {
+          setServiceList(serviceData);
         } else {
-          setServiceList([]);  // fallback to empty list
+          setServiceList([]);
           setError('No services found');
         }
-      })
-      .catch((err) => setError(err.message));
-  }
-}, [id, username]);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  fetchData();
+}, [id, apiUrl, router]);
+
 
 
   const [currentPage, setCurrentPage] = useState(1);

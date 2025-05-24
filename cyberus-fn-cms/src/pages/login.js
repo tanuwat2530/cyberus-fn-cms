@@ -5,10 +5,13 @@ import { v4 as uuidv4 } from 'uuid';
 import styles from '../styles/Login.module.css';
 
 export default function LoginPage() {
+
+  const apiUrl = process.env.BFF_API_URL;
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +27,7 @@ export default function LoginPage() {
       session
     };
   
-    fetch('http://localhost:3003/api/user/login', {
+    fetch(`${apiUrl}/api/user/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
