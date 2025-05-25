@@ -3,9 +3,10 @@ import { useRouter } from 'next/router';
 import styles from '../styles/add.module.css';
 
 export default function addUser() {
-  
+
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 const router = useRouter();
- const [err,setError]= useState([]);
+const [err,setError]= useState([]);
  
 useEffect(() => {
     const username = localStorage.getItem('user'); // replace with your key
@@ -15,7 +16,7 @@ useEffect(() => {
       session,
     };
     
-    fetch('http://localhost:3003/api/user/session', {
+    fetch(`${apiUrl}/api/user/session`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

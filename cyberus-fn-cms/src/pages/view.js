@@ -4,7 +4,8 @@ import { useEffect } from 'react';
 import styles from '../styles/home.module.css';
 
 export default function View() {
-    
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const [serviceList, setServiceList] = useState([]);
     const [error, setError] = useState('');
 
@@ -19,7 +20,7 @@ useEffect(() => {
     session,
   };
   
-  fetch('http://localhost:3003/api/user/session', {
+  fetch(`${apiUrl}/api/user/session`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -41,7 +42,7 @@ useEffect(() => {
   .catch((err) => setError(err.message));
   if (id) {
     console.log('Received data :', id);
-    fetch('http://localhost:3003/api/user/list-service', {
+    fetch(`${apiUrl}/api/user/list-service`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

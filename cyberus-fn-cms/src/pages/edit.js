@@ -5,6 +5,7 @@ import styles from '../styles/edit.module.css';
 
 export default function ConfigPage() {
  
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const router = useRouter();
   const [err,setError]= useState([]);
   const { 
@@ -30,7 +31,7 @@ export default function ConfigPage() {
       session,
     };
     
-    fetch('http://localhost:3003/api/user/session', {
+    fetch(`${apiUrl}/api/user/session`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

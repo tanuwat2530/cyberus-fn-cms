@@ -3,7 +3,8 @@ import { useRouter } from 'next/router';
 import styles from '../styles/home.module.css';
 
 export default function Home() {
-
+  
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const [usersList, setUsersList] = useState([]);
   const [err,setError]= useState([]);
 
@@ -15,7 +16,7 @@ export default function Home() {
       session,
     };
     
-    fetch('http://localhost:3003/api/user/session', {
+    fetch(`${apiUrl}/api/user/session`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -36,7 +37,7 @@ export default function Home() {
     .catch((err) => setError(err.message));
 
 
-    fetch('http://localhost:3003/api/user/list-user', {
+    fetch(`${apiUrl}/api/user/list-user`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
