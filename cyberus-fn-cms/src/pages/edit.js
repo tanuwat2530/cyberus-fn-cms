@@ -115,7 +115,7 @@ export default function ConfigPage() {
     e.preventDefault();
    
     console.log(formData)
-    fetch(`${api}/api/user/update-service`, {
+    fetch(`${apiUrl}/api/user/update-service`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
