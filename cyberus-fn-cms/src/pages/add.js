@@ -56,7 +56,7 @@ useEffect(() => {
     password,
   };
 
-  fetch('http://localhost:3003/api/user/add', {
+  fetch(`${apiUrl}/api/user/add`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -71,7 +71,7 @@ export default function ConfigPage() {
     e.preventDefault();
     const hasEmpty = Object.values(formData).some((v) => !v.trim());
     
-  fetch('http://localhost:3003/api/user/config', {
+  fetch(`${apiUrl}/api/user/config`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
