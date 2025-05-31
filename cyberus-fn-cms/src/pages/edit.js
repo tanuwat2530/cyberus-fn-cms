@@ -16,9 +16,9 @@ export default function ConfigPage() {
     shortcode,
     telcoid,
     ads_id,
-    aoc_refid,
-    aoc_id,
-    aoc_media,
+    //aoc_refid,
+    //aoc_id,
+    //aoc_media,
     postback_url,
     dn_url,
     counter} = router.query;
@@ -64,9 +64,9 @@ export default function ConfigPage() {
         telcoid: telcoid,
         ads_id: ads_id,
         client_partner_id:client_partner_id,
-        wap_aoc_refid: "",
-        wap_aoc_id:"",
-        wap_aoc_media:"",
+       // wap_aoc_refid: "",
+       // wap_aoc_id:"",
+       // wap_aoc_media:"",
         postback_url:postback_url,
         dn_url:dn_url,
         postback_counter:parseInt(counter, 10),//decimal base
@@ -171,7 +171,7 @@ export default function ConfigPage() {
                     className={styles.input}
                     name={key}
                     type={key === 'postback_counter' ? 'number' : 'text'}
-                    required
+                    //required
                     value={formData[key]}
                     onChange={handleChange}
                     readOnly={key === 'client_partner_id' || key === 'id'} // 👈 This line makes it readonly
