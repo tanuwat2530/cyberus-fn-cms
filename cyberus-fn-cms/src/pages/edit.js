@@ -80,9 +80,9 @@ export default function ConfigPage() {
     telcoid,
     ads_id,
     client_partner_id,
-    aoc_refid,
-    aoc_id,
-    aoc_media,
+    //aoc_refid,
+    //aoc_id,
+    //aoc_media,
     postback_url,
     dn_url,
     counter]);
