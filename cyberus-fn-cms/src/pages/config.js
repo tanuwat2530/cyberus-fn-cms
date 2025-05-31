@@ -55,9 +55,9 @@ export default function ConfigPage() {
     shortcode: '',
     telcoid: '',
     ads_id: '',
-    wap_aoc_refid: '',
-    wap_aoc_id: '',
-    wap_aoc_media: '',
+  //  wap_aoc_refid: '',
+  //  wap_aoc_id: '',
+  //  wap_aoc_media: '',
     postback_url: '',
     dn_url: '',
     counter: '',
@@ -118,11 +118,10 @@ export default function ConfigPage() {
           className={styles.input}
           name={key}
           type="text"
-          required
+          required={key === 'shortcode' || key === 'ads_id'}
           value={formData[key]}
           onChange={handleChange}
-          readOnly={key === 'client_partner_id'} // 👈 This line makes it readonly
-         
+          readOnly={key === 'client_partner_id'} // 👈 This line makes it readonly      
         />
       </td>
     </tr>
