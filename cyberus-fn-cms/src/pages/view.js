@@ -125,11 +125,12 @@ useEffect(() => {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Keyword</th>
+              <th>PartnerId</th>
+              <th>ServiceId</th>
               <th>Shortcode</th>
               <th>Telcoid</th>
               <th>Media</th>
+              <th>RequestUrl</th>
             </tr>
           </thead>
     
@@ -137,11 +138,12 @@ useEffect(() => {
            
             {currentService.map((serviceList) => (
               <tr key={serviceList.id}>
+                <td>{serviceList.client_partner_id}</td>
                 <td>{serviceList.id}</td>
-                <td>{serviceList.keyword}</td>
                 <td>{serviceList.shortcode}</td>
                 <td>{serviceList.telcoid}</td>
-                <td>{serviceList.wap_aoc_media}</td>
+                <td>{serviceList.ads_id}</td>
+                <td>http://cbrgateway.com/tmvh/mo-flow-receive?partner_id={serviceList.client_partner_id}&refid={"{unique-referene-id}"}&adsid={serviceList.ads_id}</td>
                 <td>
                   <button onClick={() => handleEdit
                     (
