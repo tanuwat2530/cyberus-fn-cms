@@ -143,7 +143,7 @@ useEffect(() => {
                 <td>{serviceList.shortcode}</td>
                 <td>{serviceList.telcoid}</td>
                 <td>{serviceList.ads_id}</td>
-                <td>https://cbrgateway.com/tmvh/mo-flow-receive?partner_id={serviceList.client_partner_id}&refid={"{unique-referene-id}"}&adsid={serviceList.ads_id}</td>
+                <td>https://cbrgateway.com/tmvh/mo-flow-receive?partner_id={serviceList.client_partner_id}&refid={"{unique-referene-id}"}&media={serviceList.ads_id}</td>
                 <td>
                   <button onClick={() => handleEdit
                     (
