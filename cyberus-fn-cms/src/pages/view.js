@@ -7,7 +7,9 @@ export default function View() {
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const [serviceList, setServiceList] = useState([]);
+
     const [error, setError] = useState('');
+
 
   const router = useRouter();
   const { id, username } = router.query;
@@ -58,6 +60,7 @@ useEffect(() => {
         return response.json();
       })
       .then((data) => {
+        console.log(...data)
         if (data && Array.isArray(data)) {
           setServiceList(data);
         } else {
@@ -136,14 +139,22 @@ useEffect(() => {
     
           <tbody>
            
-            {currentService.map((serviceList) => (
+            {
+            currentService.map((serviceList) => (
+            
               <tr key={serviceList.id}>
                 <td>{serviceList.client_partner_id}</td>
                 <td>{serviceList.id}</td>
                 <td>{serviceList.shortcode}</td>
-                <td>{serviceList.telcoid}</td>
+                <td>{
+                  serviceList.telcoid
+                  
+                  }</td>
                 <td>{serviceList.ads_id}</td>
-                <td>https://cbrgateway.com/tmvh/receive?partner_id={serviceList.client_partner_id}&refid={"{unique-referene-id}"}&media={serviceList.ads_id}</td>
+                <td>
+                 https://cbrgateway.com/{serviceList.ads_id === '1' ? 'tmvh' : serviceList.ads_id === '2' ? 'dtac': 'ais' // This is the default value
+                 }/receive?partner_id={serviceList.client_partner_id}&refid={"{unique-referene-id}"}&media={serviceList.ads_id}
+                </td>
                 <td>
                   <button onClick={() => handleEdit
                     (
