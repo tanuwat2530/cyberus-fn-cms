@@ -152,7 +152,7 @@ useEffect(() => {
                   }</td>
                 <td>{serviceList.ads_id}</td>
                 <td>
-                 https://cbrgateway.com/{serviceList.ads_id === '1' ? 'tmvh' : serviceList.ads_id === '2' ? 'dtac': 'ais' // This is the default value
+                 https://cbrgateway.com/{serviceList.telcoid === '1' ? 'tmvh' : serviceList.telcoid === '2' ? 'dtac': 'ais' // This is the default value
                  }/receive?partner_id={serviceList.client_partner_id}&refid={"{unique-referene-id}"}&media={serviceList.ads_id}
                 </td>
                 <td>
