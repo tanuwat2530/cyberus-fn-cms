@@ -43,7 +43,7 @@ useEffect(() => {
   })
   .catch((err) => setError(err.message));
   if (id) {
-    console.log('Received data :', id);
+    //console.log('Received data :', id);
     fetch(`${apiUrl}/api/user/list-service`, {
       method: 'POST',
       headers: {
@@ -60,7 +60,7 @@ useEffect(() => {
         return response.json();
       })
       .then((data) => {
-        console.log(...data)
+        //console.log(...data)
         if (data && Array.isArray(data)) {
           setServiceList(data);
         } else {
@@ -110,11 +110,54 @@ useEffect(() => {
       };
 
 
+  
+  const [formDataDelete, setFormDataDelete] = useState({
+  id: '',
+  client_partner_id: '',
+});
+
+ const handleDelete = (delete_service_id,delete_partner_id)  => {
+
+    
+  const dataDelete = {
+  id: delete_service_id,
+  client_partner_id: delete_partner_id
+};
+    fetch(`${apiUrl}/api/user/delete-service`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataDelete),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Cannot delete');
+        }
+        return response.json();
+      })
+      .then((data) => {
+
+        //console.log(data["code"])
+        if (data["code"] === '200'){
+          alert("Delete success")
+           window.location.reload(); // ✅ Refresh the page
+        }
+
+      })
+      .catch((error) => {
+        console.error('Error:', error.message);
+      });
+    
+
+  };
+
+
       
   return (
   
-    <div className={styles.container}>
-     
+    // <div className={styles.container}>
+     <div >
       {/* Left Sidebar */}
       <div className={styles.left}>
         {/* <button className={styles.button}>Dashboard</button>
@@ -171,10 +214,13 @@ useEffect(() => {
                       serviceList.postback_url,
                       serviceList.dn_url,
                       serviceList.postback_counter,
-
-                     
-                     
                     )} className={styles.button_action}>Edit</button>&nbsp;&nbsp;
+
+                     <button onClick={() => handleDelete
+                    (
+                      serviceList.id,
+                      serviceList.client_partner_id,
+                    )} className={styles.button_action}>Delete</button>
                   
                 </td>
               </tr>
