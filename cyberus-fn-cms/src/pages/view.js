@@ -116,12 +116,13 @@ useEffect(() => {
   client_partner_id: '',
 });
 
- const handleDelete = (delete_service_id,delete_partner_id)  => {
+ const handleDelete = (delete_service_id,delete_partner_id,delete_media)  => {
 
     
   const dataDelete = {
   id: delete_service_id,
-  client_partner_id: delete_partner_id
+  client_partner_id: delete_partner_id,
+  media: delete_media
 };
     fetch(`${apiUrl}/api/user/delete-service`, {
       method: 'POST',
@@ -220,6 +221,8 @@ useEffect(() => {
                     (
                       serviceList.id,
                       serviceList.client_partner_id,
+                      serviceList.ads_id,
+                    
                     )} className={styles.button_action}>Delete</button>
                   
                 </td>
@@ -229,12 +232,9 @@ useEffect(() => {
         </table>
 
         <div className={styles.pagination}>
-        
           <button onClick={handlePrev} disabled={currentPage === 1}>
-            
             ⬅ Prev
           </button>
-
           <button onClick={ handleHome} className={styles.button}>Home</button>
           <button onClick={handleNext} disabled={currentPage === totalPages}>
             Next ➡
@@ -247,7 +247,12 @@ useEffect(() => {
         {/* <button className={styles.button}>Profile</button>
         <button className={styles.button}>Logout</button> */}
       </div>
+
+
+
+
     </div>
+    
   );
 
 }

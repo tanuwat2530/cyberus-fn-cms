@@ -6,8 +6,12 @@ export default function Home() {
   
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const [usersList, setUsersList] = useState([]);
+
+  const [logsList, setLogsList] = useState([]);
   const [err,setError]= useState([]);
 
+
+  
   useEffect(() => {
     const username = localStorage.getItem('user'); // replace with your key
     const session = localStorage.getItem('session'); // replace with your key
@@ -15,7 +19,7 @@ export default function Home() {
       username,
       session,
     };
-    
+//CHECK SESSION LOGIN API
     fetch(`${apiUrl}/api/user/session`, {
       method: 'POST',
       headers: {
@@ -36,7 +40,7 @@ export default function Home() {
     })
     .catch((err) => setError(err.message));
 
-
+//LIST USER API
     fetch(`${apiUrl}/api/user/list-user`, {
       method: 'POST',
       headers: {
@@ -52,6 +56,25 @@ export default function Home() {
       })
       .then((data) => setUsersList(data))
       .catch((err) => setError(err.message));
+
+//LIST LOG ON REDIS
+fetch(`${apiUrl}/api/user/list-log`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: null,
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch user list');
+      }
+      return response.json();
+    })
+    .then((data) =>  setLogsList(data))
+    .catch((err) => setError(err.message));
+
+
   }, []);
 
   
@@ -123,14 +146,10 @@ export default function Home() {
         </table>
 
         <div className={styles.pagination}>
-        
           <button onClick={handlePrev} disabled={currentPage === 1}>
-            
             ⬅ Prev
           </button>
-
           <button onClick={ handleAdd} className={styles.button}>Add</button>
-
           <button onClick={handleNext} disabled={currentPage === totalPages}>
             Next ➡
           </button>
@@ -142,6 +161,27 @@ export default function Home() {
         {/* <button className={styles.button}>Profile</button>
         <button className={styles.button}>Logout</button> */}
       </div>
+
+       
+       <pre>
+  {logsList.map((log, index) => (
+    <div key={index} style={{ marginBottom: '10px' }}>
+      <div><strong>Loggin #{index + 1}</strong></div>
+      {Object.entries(log).map(([key, value]) => (
+        <div key={key}>
+          {key} ({value.length}): {value}
+        </div>
+      ))}
     </div>
+  ))}
+</pre>
+
+          
+
+    </div>
+  
+
+    
   );
+  
 }
