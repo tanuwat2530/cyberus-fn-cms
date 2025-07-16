@@ -112,6 +112,27 @@ fetch(`${apiUrl}/api/user/list-log`, {
 
   return (
     <div className={styles.container}>
+      <br/>
+          <center>
+   {/* --- Menu --- */}
+            <header className="bg-white shadow-md sticky top-0 z-40">
+                <nav>
+                    <a href="/cms/home" title="Configuration">
+                        SERVICE CONFIGURATION
+                    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="/cms/mo" title="Partner sent to Cyberus">
+                        MO HISTORY
+                    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="/cms/dn" title="DN from Gateway">
+                        DN HISTORY
+                    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                     <a href="/cms/report" title="Summary data">
+                       REPORT
+                    </a>
+                </nav>
+            </header>
+            </center>
+
       {/* Left Sidebar */}
       <div className={styles.left}>
         {/* <button className={styles.button}>Dashboard</button>
