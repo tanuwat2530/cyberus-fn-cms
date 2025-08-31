@@ -244,14 +244,17 @@ function convertDateRangeToTimestamps(dateString) {
     const day = parseInt(parts[0], 10);
     const month = parseInt(parts[1], 10); // Month is 0-indexed in JS Date
     const year = parseInt(parts[2], 10);
+
     // Add 7 hours to the start of the day.
     const startDate = new Date(year, month - 1, day, 7, 0, 0, 0);
     const startTimestampSeconds = Math.floor(startDate.getTime() / 1000);
+
     // Add 7 hours to the end of the day.
     const endDate = new Date(year, month - 1, day, 23, 59, 59, 999);
     // Add 7 hours to the end date
-    git.setHours(endDate.getHours() + 7);
+    endDate.setHours(endDate.getHours() + 7);
     const endTimestampSecondsPrecise = Math.floor(endDate.getTime() / 1000);
+
     return {
         dateString: dateString,
         startSeconds: startTimestampSeconds.toString(),
