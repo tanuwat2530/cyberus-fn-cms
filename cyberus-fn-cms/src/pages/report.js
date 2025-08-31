@@ -197,44 +197,65 @@ console.log("PAYLOAD : ",(JSON.stringify(payload)))
   }
 };  
 
-function convertDateRangeToTimestamps(dateString) {
-    // Ensure dateString is in a format parseable by new Date()
-    // For "DD/MM/YYYY", it's safer to parse manually or rearrange to "MM/DD/YYYY"
-    // or use a library. Let's assume MM/DD/YYYY for direct parsing.
-    // If your input is strictly DD/MM/YYYY, you'll need to reformat it.
-    // Example: "01/06/2025" -> "06/01/2025" for JavaScript's default parsing.
+// function convertDateRangeToTimestamps(dateString) {
+//     // Ensure dateString is in a format parseable by new Date()
+//     // For "DD/MM/YYYY", it's safer to parse manually or rearrange to "MM/DD/YYYY"
+//     // or use a library. Let's assume MM/DD/YYYY for direct parsing.
+//     // If your input is strictly DD/MM/YYYY, you'll need to reformat it.
+//     // Example: "01/06/2025" -> "06/01/2025" for JavaScript's default parsing.
 
-    // Let's assume the input dateString is 'DD/MM/YYYY' and parse it correctly.
+//     // Let's assume the input dateString is 'DD/MM/YYYY' and parse it correctly.
+//     const parts = dateString.split('/');
+//     const day = parseInt(parts[0], 10);
+//     const month = parseInt(parts[1], 10); // Month is 0-indexed in JS Date
+//     const year = parseInt(parts[2], 10);
+
+//     // Start of the day (00:00:00.000)
+//     // Month is (month - 1) because JavaScript months are 0-indexed (January is 0)
+//     const startDate = new Date(year, month - 1, day, 0, 0, 0, 0);
+//     const startTimestampMs = startDate.getTime(); // Timestamp in milliseconds
+
+//     // End of the day (23:59:59.999)
+//     // Option 1: Go to the next day at 00:00:00 and subtract 1 millisecond
+//     //const nextDayDate = new Date(year, month - 1, day + 1, 0, 0, 0, 0);
+//     //const endTimestampMs = nextDayDate.getTime() - 1; // Timestamp in milliseconds
+
+//     // If you need it in seconds (Unix timestamp is typically in seconds)
+//     const startTimestampSeconds = Math.floor(startTimestampMs / 1000);
+//     //const endTimestampSeconds = Math.floor(endTimestampMs / 1000); // Note: this rounds down
+
+//     // To get exactly 23:59:59 timestamp in seconds, you can set it directly:
+//     const endDate = new Date(year, month - 1, day, 23, 59, 59, 999); // Set to 999ms for safety
+//     const endTimestampSecondsPrecise = Math.floor(endDate.getTime() / 1000);
+
+//     return {
+       
+//        // startMs: startTimestampMs,
+//        // endMs: endTimestampMs,
+//         dateString:dateString,
+//         startSeconds: startTimestampSeconds.toString(),
+//         endSeconds: endTimestampSecondsPrecise.toString() // Use this for 23:59:59 in seconds
+//     };
+// }
+
+function convertDateRangeToTimestamps(dateString) {
+    // Assuming the input dateString is 'DD/MM/YYYY'.
     const parts = dateString.split('/');
     const day = parseInt(parts[0], 10);
     const month = parseInt(parts[1], 10); // Month is 0-indexed in JS Date
     const year = parseInt(parts[2], 10);
-
-    // Start of the day (00:00:00.000)
-    // Month is (month - 1) because JavaScript months are 0-indexed (January is 0)
-    const startDate = new Date(year, month - 1, day, 0, 0, 0, 0);
-    const startTimestampMs = startDate.getTime(); // Timestamp in milliseconds
-
-    // End of the day (23:59:59.999)
-    // Option 1: Go to the next day at 00:00:00 and subtract 1 millisecond
-    //const nextDayDate = new Date(year, month - 1, day + 1, 0, 0, 0, 0);
-    //const endTimestampMs = nextDayDate.getTime() - 1; // Timestamp in milliseconds
-
-    // If you need it in seconds (Unix timestamp is typically in seconds)
-    const startTimestampSeconds = Math.floor(startTimestampMs / 1000);
-    //const endTimestampSeconds = Math.floor(endTimestampMs / 1000); // Note: this rounds down
-
-    // To get exactly 23:59:59 timestamp in seconds, you can set it directly:
-    const endDate = new Date(year, month - 1, day, 23, 59, 59, 999); // Set to 999ms for safety
+    // Add 7 hours to the start of the day.
+    const startDate = new Date(year, month - 1, day, 7, 0, 0, 0);
+    const startTimestampSeconds = Math.floor(startDate.getTime() / 1000);
+    // Add 7 hours to the end of the day.
+    const endDate = new Date(year, month - 1, day, 23, 59, 59, 999);
+    // Add 7 hours to the end date
+    git.setHours(endDate.getHours() + 7);
     const endTimestampSecondsPrecise = Math.floor(endDate.getTime() / 1000);
-
     return {
-       
-       // startMs: startTimestampMs,
-       // endMs: endTimestampMs,
-        dateString:dateString,
+        dateString: dateString,
         startSeconds: startTimestampSeconds.toString(),
-        endSeconds: endTimestampSecondsPrecise.toString() // Use this for 23:59:59 in seconds
+        endSeconds: endTimestampSecondsPrecise.toString()
     };
 }
 
