@@ -108,7 +108,7 @@ export default function CmsMoDetailReport() {
                                         <td className="py-3 px-4 text-gray-600 break-all">{formatTimestamp(row.timestamp)}</td>
                                         <td className="py-3 px-4 text-gray-600 break-all">{row.msisdn}</td>
                                         <td className="py-3 px-4 text-gray-600 break-all">{row.action}</td>
-                                        <td className="py-3 px-4 text-gray-600 break-all">{row.shortcode}</td>
+                                        <td className="py-3 px-4 text-gray-600 break-all">{row.short_code}</td>
                                         <td className="py-3 px-4 text-gray-600 break-all">{row.description}</td>
                                         <td className="py-3 px-4 text-gray-600 break-all">{row.media}</td>
                                         <td className="py-3 px-4 text-gray-600 break-all">{row.cyberus_return}</td>

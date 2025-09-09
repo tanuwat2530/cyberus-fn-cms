@@ -90,13 +90,12 @@ export default function CmsDnDetailReport() {
                         <table className={styles.table}>
                             <thead className="bg-blue-600 text-white text-sm uppercase">
                                 <tr>
-                                    <th className="py-3 px-4 border-b border-gray-200">RefID</th>
+                                    <th className="py-3 px-4 border-b border-gray-200">TranRef</th>
                                     <th className="py-3 px-4 border-b border-gray-200">Date/Time</th>
                                     <th className="py-3 px-4 border-b border-gray-200">Msisdn</th>
-                                    <th className="py-3 px-4 border-b border-gray-200">Action</th>
+                                    <th className="py-3 px-4 border-b border-gray-200">Code</th>
                                     <th className="py-3 px-4 border-b border-gray-200">Shortcode</th>
                                     <th className="py-3 px-4 border-b border-gray-200">Description</th>
-                                    <th className="py-3 px-4 border-b border-gray-200">Media</th>
                                     <th className="py-3 px-4 border-b border-gray-200">Postback</th>
                                 </tr>
                             </thead>
@@ -104,13 +103,12 @@ export default function CmsDnDetailReport() {
                             <tbody>
                                 {data.map((row, index) => (
                                     <tr key={index} className={`border-b border-gray-200 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                                        <td className="py-3 px-4 text-gray-800 break-all">{row.ref_id}</td>
+                                        <td className="py-3 px-4 text-gray-800 break-all">{row.tran_ref}</td>
                                         <td className="py-3 px-4 text-gray-600 break-all">{formatTimestamp(row.timestamp)}</td>
                                         <td className="py-3 px-4 text-gray-600 break-all">{row.msisdn}</td>
-                                        <td className="py-3 px-4 text-gray-600 break-all">{row.action}</td>
-                                        <td className="py-3 px-4 text-gray-600 break-all">{row.shortcode}</td>
+                                        <td className="py-3 px-4 text-gray-600 break-all">{row.code}</td>
+                                        <td className="py-3 px-4 text-gray-600 break-all">{row.short_code}</td>
                                         <td className="py-3 px-4 text-gray-600 break-all">{row.description}</td>
-                                        <td className="py-3 px-4 text-gray-600 break-all">{row.media}</td>
                                         <td className="py-3 px-4 text-gray-600 break-all">{row.cyberus_return}</td>
                                     </tr>
                                 ))}
