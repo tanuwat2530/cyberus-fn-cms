@@ -70,14 +70,21 @@ export default function CmsDnDetailReport() {
         fetchReportDetail();
     }, [router.isReady, router.query, apiUrl, router]);
 
-    // Helper function to format the timestamp
-    // Assuming the timestamp is a string in a comparable format (e.g., "YYYY-MM-DD HH:MM:SS").
-    const formatTimestamp = (timestamp) => {
-        if (!timestamp) return '';
-        const date = new Date(timestamp);
-        return date.toLocaleString();
-    };
-
+  // Helper function to format Unix timestamp to a 24-hour clock
+const formatTimestamp = (timestamp) => {
+    if (!timestamp) return '';
+    // The timestamp is in seconds, so multiply by 1000 for milliseconds
+    const date = new Date(parseInt(timestamp, 10) * 1000);
+    return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false // This is the key option for 24H format
+    });
+};
     return (
         <div className="min-h-screen bg-gray-100 p-4">
 
