@@ -52,8 +52,13 @@ export default function CmsMoDetailReport() {
                 }
 
                 const responseData = await res.json();
-                console.log(responseData)
-                setData(responseData);
+
+                // Sort the data by timestamp in descending order
+                // The `timestamp` field is expected to be a number (Unix timestamp).
+                const sortedData = responseData.sort((a, b) => b.timestamp - a.timestamp);
+                
+                console.log(sortedData);
+                setData(sortedData);
             } catch (err) {
                 console.error("Failed to fetch detail data:", err);
                 setError(err.message);
@@ -65,25 +70,20 @@ export default function CmsMoDetailReport() {
         fetchReportDetail();
     }, [router.isReady, router.query, apiUrl, router]);
 
-        // Helper function to format Unix timestamp
+    // Helper function to format Unix timestamp
     const formatTimestamp = (timestamp) => {
         if (!timestamp) return '';
-        const date = new Date(parseInt(timestamp, 10) * 1000);
+        // The timestamp is in seconds, so multiply by 1000 for milliseconds
+        const date = new Date(parseInt(timestamp, 10) * 1000); 
         return date.toLocaleString();
     };
+
     return (
         <div className="min-h-screen bg-gray-100 p-4">
-
             <div className="max-w-7xl mx-auto mt-4 p-8 bg-white rounded-2xl shadow-xl">
                 <div className="text-center mb-6">
                     <h1 className="text-3xl font-bold text-gray-800">Subscription Detail Report</h1>
-                    {/* {router.query.telco && (
-                        <h2 className="text-xl text-gray-600 mt-2">
-                            Telco: <span className="uppercase">{router.query.telco}</span>, Period: {router.query.start} to {router.query.end}
-                        </h2>
-                    )} */}
                 </div>
-
 
                 {data && data.length > 0 ? (
                     <div className="overflow-x-auto rounded-lg shadow-xl">
